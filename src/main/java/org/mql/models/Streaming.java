@@ -1,9 +1,9 @@
 package org.mql.models;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -40,7 +41,28 @@ public class Streaming {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "mod_id")
 	private Module module;
+	
+	
+	/*  Comments */
+	@OneToMany (mappedBy = "streaming", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+			CascadeType.DETACH } )
+	private Set<Comment> comments = new HashSet<Comment>();
+	
+	public Set<Comment> getComments() {
+		return comments;
+	}
+	
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	public void addComment(Comment comment) {
+		comment.setStreaming(this);
+		System.out.println("Comment : "+comment.getStreaming());
+		comments.add(comment);
+	}
 
+	/*  */
 	public Streaming() {
 
 	}

@@ -2,7 +2,9 @@ package org.mql.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,16 +21,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.jackson2.SimpleGrantedAuthorityMixin;
 
 @Entity
 @Table(name = "member")
 public class Member implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,21 +88,37 @@ public class Member implements UserDetails {
 	//Motivation
 	@Column(name = "motivation",columnDefinition="TEXT")
 	private String motivation;
-	
-	
-	
-	/*
-	 * code hajar
-	 *************************************************************************************/
+		
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private Admission admission;
 	
 	
-
-	//
+	/*
+	comments :
+	*/
+	@OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+			CascadeType.DETACH })
+	private Set<Comment> comments = new HashSet<Comment>();
+	
+	
+	public void addComment(Comment c) {
+		comments.add(c);
+	}
+	
+	
+	public Set<Comment> getComments() {
+		return comments;
+	}
+	
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	/*  */
 	public Member() {
 
 	}
+	
 
 	public Member(String firstName) {
 		super();
@@ -261,6 +279,7 @@ public class Member implements UserDetails {
 		this.confirmationToken = confirmationToken;
 	}
 	
+
 
 	
 	public Collection<Role> getRoles() {

@@ -37,5 +37,9 @@ public class StreamingServiceImpl implements StreamingService{
 			return true;
 		return false;
 	}
-	
+
+	@Override
+	public Streaming save(Streaming s) {
+		return streamingRepository.save(s);
+	}
 }

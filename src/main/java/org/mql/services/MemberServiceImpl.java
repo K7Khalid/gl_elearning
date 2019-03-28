@@ -99,6 +99,11 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
+	public Member findById(int id) {
+		return repository.findById(id).get();
+	}
+	
+	@Override
 	public Member findByConfirmationToken(String confirmation) {
 		return repository.findByConfirmationToken(confirmation);
 	}

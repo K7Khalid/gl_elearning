@@ -15,4 +15,5 @@ public interface MemberService extends UserDetailsService{
 	Member save(Member member);
 	Member findByConfirmationToken(String confirmation);
 	boolean sendAdmissionEmail(Member member);
+	Member findById(int id);
 }
