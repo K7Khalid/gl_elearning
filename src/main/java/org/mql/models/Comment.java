@@ -18,6 +18,8 @@ public class Comment {
 	
 	// extra columns
 	private Date date;
+
+	@Column(columnDefinition="TEXT")
 	private String content;
 	
 	public Comment() {

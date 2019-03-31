@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -98,7 +99,7 @@ public class Member implements UserDetails {
 	*/
 	@OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
-	private Set<Comment> comments = new HashSet<Comment>();
+	private List<Comment> comments = new Vector<Comment>();
 	
 	
 	public void addComment(Comment c) {
@@ -106,11 +107,11 @@ public class Member implements UserDetails {
 	}
 	
 	
-	public Set<Comment> getComments() {
+	public List<Comment> getComments() {
 		return comments;
 	}
 	
-	public void setComments(Set<Comment> comments) {
+	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
 	

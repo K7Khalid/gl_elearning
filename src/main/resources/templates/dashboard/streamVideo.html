@@ -6,24 +6,26 @@
 <div th:replace="fragments/general.html :: head"></div>
 
 <body>
-	
+
 	<div id="page">
-		
+
 		<div th:replace="fragments/general.html :: header"></div>
 		<!-- /header -->
-		
-	
-	<main>
+
+
+		<main>
 		<section id="hero_in" class="contacts">
 			<div class="wrapper">
 				<div class="container">
-					<h1 class="fadeInUp"><span></span>Cours en Live</h1>
+					<h1 class="fadeInUp">
+						<span></span>Cours en Live
+					</h1>
 				</div>
 			</div>
 		</section>
 		<!--/hero_in-->
 
-				<div class="container margin_60_35">
+		<div class="container margin_60_35">
 			<div class="main_title_2">
 				<span><em></em></span>
 				<h2 th:text="${streaming.title}">Video Title</h2>
@@ -42,76 +44,70 @@
 				</div>
 				<hr>
 				<section id="comments">
-					<h2>Commentaires</h2>
+
+					<h2 th:if="${#lists.isEmpty(comments)}">Aucun commentaire ..</h2>
+					<h2 th:unless="${#lists.isEmpty(comments)}">Commentaires</h2>
+					<br />
 					<div class="reviews-container">
-						<div class="review-box clearfix">
-							<figure class="rev-thumb"><img src="http://via.placeholder.com/150x150/ccc/fff/avatar1.jpg" alt="">
+						<div th:each="comment: ${comments}" class="review-box clearfix">
+							<figure class="rev-thumb">
+								<img
+									th:src="@{${'https://via.placeholder.com/150/212529/fff?text='+#strings.substring(comment.member.firstName,0,1)}}"
+									alt="">
 							</figure>
 							<div class="rev-content">
-								<div class="rev-info">
-									Admin – April 03, 2016:
-								</div>
+								<div class="rev-info">[[${comment.member}]] –
+									[[${comment.date}]]:</div>
 								<div class="rev-text">
-									<p>
-										Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-									</p>
+									<p th:text="${comment.content}"></p>
 								</div>
 							</div>
 						</div>
 						<!-- /review-box -->
-						<div class="review-box clearfix">
-							<figure class="rev-thumb"><img src="http://via.placeholder.com/150x150/ccc/fff/avatar2.jpg" alt="">
-							</figure>
-							<div class="rev-content">
-								<div class="rev-info">
-									Ahsan – April 01, 2016:
-								</div>
-								<div class="rev-text">
-									<p>
-										Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-									</p>
-								</div>
-							</div>
+
+					</div>
+					<!-- /review-container -->
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10">
+							<form th:action="@{/stream/{id}/addComment(id=${streaming.id})}">
+								<span class="input"> <textarea name="content" class="input_field"
+										id="content"  style="height: 150px;"></textarea> <label class="input_label">
+										<span class="input__label-content">Ajouter Un
+											Commentaire</span>
+								</label>
+								</span>
+								<p>
+									<input type="submit" value="Ajouter" class="btn_1 ">
+								</p>
+							</form>
 						</div>
-						<!-- /review-box -->
-						<div class="review-box clearfix">
-							<figure class="rev-thumb"><img src="http://via.placeholder.com/150x150/ccc/fff/avatar3.jpg" alt="">
-							</figure>
-							<div class="rev-content">
-								<div class="rev-info">
-									Sara – March 31, 2016:
-								</div>
-								<div class="rev-text">
-									<p>
-										Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-									</p>
-								</div>
-							</div>
-						</div>
-						<!-- /review-box -->
-						</div>
-						<!-- /review-container -->
+					</div>
 				</section>
-				
+
+
 			</div>
 			<!-- /container -->
 		</div>
-		<!-- /bg_color_1 -->
-	</main>
-	<!--/main-->
-	
+		<!-- /bg_color_1 --> </main>
+		<!--/main-->
+
 		<div th:replace="fragments/general.html :: footer"></div>
 		<!--/footer-->
-		
+
 	</div>
 	<!-- page -->
 	
+	<script type="text/javascript">
+		
+	</script>
+
 	<!-- COMMON SCRIPTS -->
-    <script th:src="@{/js/jquery-2.2.4.min.js}"></script>
-    <script th:src="@{/js/common_scripts.js}"></script>
-    <script th:src="@{/js/main.js}"></script>
+	<script th:src="@{/js/jquery-2.2.4.min.js}"></script>
+	<script th:src="@{/js/common_scripts.js}"></script>
+	<script th:src="@{/js/main.js}"></script>
 	<script th:src="@{/assets/validate.js}"></script>
-	
+
 	<!-- SPECIFIC SCRIPTS -->
 	<script type="text/javascript" th:src="@{/js/mapmarker.jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/mapmarker_func.jquery.js}"></script>

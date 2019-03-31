@@ -3,11 +3,13 @@ package org.mql.controllers;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.mql.dao.MemberRepository;
 import org.mql.dao.ModuleRepository;
 import org.mql.dao.StreamingRepository;
+import org.mql.models.Comment;
 import org.mql.models.Member;
 import org.mql.models.Module;
 import org.mql.models.Streaming;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class StreamingController {
@@ -87,11 +90,27 @@ public class StreamingController {
 		if(!status) {
 			return "error/403"; 
 		}
+
+		List<Comment> comments = streaming.getComments();
+ 		
+		model.addAttribute("comments",comments);
+		
 		model.addAttribute("streaming",streaming);
-		//System.out.println(streaming.getUrl());
-		//return "success "+id;
+
 		return "dashboard/streamVideo";
 		
+	}
+	
+	@GetMapping("/stream/{id}/addComment")
+	public String addComment(@PathVariable int id,@RequestParam("content") String content,Principal principal) {
+		Comment comment = new Comment();
+		Streaming streaming = streamingService.findById(id);
+		comment.setMember(memberService.findByEmail(principal.getName()));
+		comment.setDate(new Date());
+		comment.setContent(content);
+		streaming.addComment(comment);
+		streamingService.save(streaming);
+		return "redirect:/stream/"+id;
 	}
 
 }

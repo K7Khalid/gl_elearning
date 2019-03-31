@@ -46,14 +46,14 @@ public class Streaming {
 	/*  Comments */
 	@OneToMany (mappedBy = "streaming", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH } )
-	private Set<Comment> comments = new HashSet<Comment>();
+	private List<Comment> comments = new Vector<Comment>();
 	
-	public Set<Comment> getComments() {
-		return comments;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 	
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
+	public List<Comment> getComments() {
+		return comments;
 	}
 	
 	public void addComment(Comment comment) {
