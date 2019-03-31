@@ -2,9 +2,7 @@ package org.mql.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
@@ -26,6 +24,8 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "member")
@@ -64,24 +64,27 @@ public class Member implements UserDetails {
 	private String confirmationToken;
 	//
 	
-
+	@JsonIgnore
 	@OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
 			CascadeType.REFRESH, CascadeType.DETACH })
 
 	private List<Module> teachedModules;
 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
 	@JoinTable(name = "following", joinColumns = @JoinColumn(name = "memb_id"), inverseJoinColumns = @JoinColumn(name = "form_id"))
 	private List<Formation> followedFormations;
 
 	// roles for security :
+	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
 	@JoinTable(name = "members_roles", joinColumns = @JoinColumn(name = "member_id", referencedColumnName = "memb_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
 	////////////////
 
 	// categories :
+	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "teacher_cat", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "cat_id"))
 	private List<Category> categories = new ArrayList<>();
@@ -97,6 +100,7 @@ public class Member implements UserDetails {
 	/*
 	comments :
 	*/
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
 	private List<Comment> comments = new Vector<Comment>();
@@ -182,6 +186,7 @@ public class Member implements UserDetails {
 		return firstName;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
 	@JoinColumn(name = "form_id")

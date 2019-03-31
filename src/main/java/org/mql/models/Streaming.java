@@ -1,8 +1,6 @@
 package org.mql.models;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
@@ -15,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "streaming")
@@ -38,6 +38,7 @@ public class Streaming {
 	@Column(name = "duration")
 	private String duration;
 
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "mod_id")
 	private Module module;

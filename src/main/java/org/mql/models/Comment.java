@@ -1,5 +1,6 @@
 package org.mql.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -9,16 +10,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Comment {
 	private long id;
 	private Member member;
 	private Streaming streaming;
-	
+	/*
 	// extra columns
 	private Date date;
-
+	*/
+	// to avoid problems during presentation in comments & ajax
+	String dateText;
+	
 	@Column(columnDefinition="TEXT")
 	private String content;
 	
@@ -26,12 +33,12 @@ public class Comment {
 		super();
 	}
 
-	public Comment(Member member, Streaming streaming, Date date, String content) {
+	public Comment(Member member, Streaming streaming, String content) {
 		super();
 		this.member = member;
 		this.streaming = streaming;
-		this.date = date;
 		this.content = content;
+		setDateText();
 	}
 
 	@Id
@@ -45,6 +52,7 @@ public class Comment {
 		this.id = id;
 	}
 	
+	
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
 	@JoinColumn(name = "member_id")
@@ -56,7 +64,7 @@ public class Comment {
 		this.member = member;
 	}
 	
-	
+	@JsonIgnore
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
 			CascadeType.DETACH })
 	@JoinColumn(name = "streaming_id")
@@ -68,14 +76,6 @@ public class Comment {
 		this.streaming = streaming;
 	}
 
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -83,17 +83,20 @@ public class Comment {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
 	
+
+	public String getDateText() {
+		return dateText;
+	}
+
+	public void setDateText(String dateText) {
+		this.dateText = dateText;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void setDateText() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.dateText = format.format(new Date());
+	}
+
 }

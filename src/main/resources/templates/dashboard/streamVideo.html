@@ -45,10 +45,10 @@
 				<hr>
 				<section id="comments">
 
-					<h2 th:if="${#lists.isEmpty(comments)}">Aucun commentaire ..</h2>
-					<h2 th:unless="${#lists.isEmpty(comments)}">Commentaires</h2>
+					<h2 id="commentaires" th:if="${#lists.isEmpty(comments)}">Aucun commentaire ..</h2>
+					<h2 id="commentaires" th:unless="${#lists.isEmpty(comments)}">Commentaires</h2>
 					<br />
-					<div class="reviews-container">
+					<div class="reviews-container" id="comment-section">
 						<div th:each="comment: ${comments}" class="review-box clearfix">
 							<figure class="rev-thumb">
 								<img
@@ -57,7 +57,7 @@
 							</figure>
 							<div class="rev-content">
 								<div class="rev-info">[[${comment.member}]] –
-									[[${comment.date}]]:</div>
+									[[${comment.dateText}]] :</div>
 								<div class="rev-text">
 									<p th:text="${comment.content}"></p>
 								</div>
@@ -70,16 +70,19 @@
 					<div class="row">
 						<div class="col-md-1"></div>
 						<div class="col-md-10">
-							<form th:action="@{/stream/{id}/addComment(id=${streaming.id})}">
-								<span class="input"> <textarea name="content" class="input_field"
-										id="content"  style="height: 150px;"></textarea> <label class="input_label">
+							<form th:action="@{/comment}" method="POST" id="comment-form">
+								<span class="input"> <textarea name="content"
+										id="content" required="required" class="input_field"
+										style="height: 150px;"></textarea> <label class="input_label">
 										<span class="input__label-content">Ajouter Un
 											Commentaire</span>
 								</label>
 								</span>
 								<p>
-									<input type="submit" value="Ajouter" class="btn_1 ">
+									<input type="submit" id="btn-submit" value="Ajouter"
+										class="btn_1 ">
 								</p>
+								<input hidden="hidden" id="stream_id" th:value="${streaming.id}" />
 							</form>
 						</div>
 					</div>
@@ -97,7 +100,7 @@
 
 	</div>
 	<!-- page -->
-	
+
 	<script type="text/javascript">
 		
 	</script>
@@ -111,5 +114,59 @@
 	<!-- SPECIFIC SCRIPTS -->
 	<script type="text/javascript" th:src="@{/js/mapmarker.jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/mapmarker_func.jquery.js}"></script>
+	<SCRIPT type="text/javascript">
+		$(document).ready(function() {
+			$("#comment-form").submit(function(event) {
+				//stop submit the form, we will post it manually.
+				event.preventDefault();
+				fire_ajax_submit();
+			});
+		});
+
+		function fire_ajax_submit() {
+			var body = {
+				content : $("#content").val(),
+				stream_id : $("#stream_id").val()
+			}
+			$("#btn-submit").prop("disabled", true);
+
+			$.ajax({
+				type : "POST",
+				contentType : "application/json",
+				url : "/comment",
+				data : JSON.stringify(body),
+				dataType : 'json',
+				cache : false,
+				timeout : 600000,
+				success : function(data) {
+					var firstLetter = data.member.firstName.substring(0,1);
+					var $img = $('<img>', { src : "https://via.placeholder.com/150/212529/fff?text="+firstLetter+""});
+					var $figure = $('<figure>', {class : 'rev-thumb'});
+					$figure.append($img);
+					var $revContent = $('<div>', {class : 'rev-content'});
+					var $revInfo = $('<div>', {class : 'rev-info', text : " "+data.member.lastName +" "+data.member.firstName +" - "+ data.dateText +" : "});
+					var $revText = $('<div>' ,{class : 'rev-text">'});
+					$revText.append("<p>"+data.content+"</p>");
+					$revContent.append($revInfo);
+					$revContent.append($revText);
+					var	$div = $('<div>', {class : 'review-box clearfix'});
+					$div.append($figure);
+					$div.append($revContent);
+					$("#comment-section").prepend($div);
+					$("#btn-submit").prop("disabled", false);
+					$("#content").val('');
+					if($("#commentaires").text() == "Aucun commentaire .."){
+						console.log("hey");
+						$("#commentaires").text('Commentaires');
+						console.log($("#commentaires").val());
+					}
+				},
+				error : function(e) {
+					console.log("erreur");
+					console.log("ERROR : ", e);
+				}
+			});
+		}
+	</SCRIPT>
 </body>
 </html>

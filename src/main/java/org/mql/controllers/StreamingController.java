@@ -3,7 +3,6 @@ package org.mql.controllers;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import org.mql.dao.MemberRepository;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class StreamingController {
@@ -100,7 +98,7 @@ public class StreamingController {
 		return "dashboard/streamVideo";
 		
 	}
-	
+	/*
 	@GetMapping("/stream/{id}/addComment")
 	public String addComment(@PathVariable int id,@RequestParam("content") String content,Principal principal) {
 		Comment comment = new Comment();
@@ -112,5 +110,6 @@ public class StreamingController {
 		streamingService.save(streaming);
 		return "redirect:/stream/"+id;
 	}
+	*/
 
 }

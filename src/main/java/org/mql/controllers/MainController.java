@@ -43,14 +43,7 @@ public class MainController {
 
 	//
 	@GetMapping("/")
-	public @ResponseBody String home() {
-		Streaming s = streamingService.findById(1);
-		Member m = memberService.findById(3);
-		Comment c = new Comment(m, s, new Date(), "Hello");
-		s.addComment(c);
-		//commentRepo.save(c);
-		streamingService.save(s);
-		
+	public String home() {
 		return "main_views/home";
 	}
 	
