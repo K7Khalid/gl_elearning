@@ -27,4 +27,16 @@ public class CategoryServiceImpl implements CategoryService{
 	public boolean existsById(Integer id) {
 		return categoryRepository.existsById(id);
 	}
+
+	@Override
+	public Category findById(Integer id) {
+		return categoryRepository.findById(id).get();
+	}
+	
+	@Override
+	public List<Category> findTop6() {
+		return categoryRepository.findTop6ByOrderById();
+	}
+	
+	
 }

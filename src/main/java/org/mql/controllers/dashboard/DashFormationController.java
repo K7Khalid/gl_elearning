@@ -8,9 +8,11 @@ import javax.validation.Valid;
 import org.mql.dao.FormationRepository;
 import org.mql.dao.MemberRepository;
 import org.mql.dao.ModuleRepository;
+import org.mql.models.Category;
 import org.mql.models.Formation;
 import org.mql.models.Member;
 import org.mql.models.Module;
+import org.mql.services.CategoryService;
 import org.mql.services.FormationService;
 import org.mql.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +37,12 @@ public class DashFormationController {
 	ModuleRepository moduleRepository;
 	@Autowired
 	MemberRepository memberRepository;
-	
+
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	CategoryService categoryService;
 	
 	@Autowired
 	FormationService formationService;
@@ -62,22 +67,28 @@ public class DashFormationController {
 	@GetMapping(value="formation/add")
 	public String FormulaireFormation(Model model)
 	{
+		List<Category> categories = categoryService.findAll();
 		model.addAttribute("formation",new Formation());
 		model.addAttribute("member",new Member());
+		model.addAttribute("categories",categories);
 		return "dashboard/addFormation" ;
 	}
 	
 	//affichage de la formation ajoutee**********************************************************************
 	@PostMapping(value="/saveFormation")
-	public String save(Model model,@Valid Formation formation,Member member, BindingResult bindingResult,Principal principal)
+	public String save(Model model,@Valid Formation formation,@RequestParam("category_id") int categoryId ,Member member, BindingResult bindingResult,Principal principal)
 	{
 		if(bindingResult.hasErrors())
 		{
 			return "/dashboard/formation/add" ;
 		}
+		
 		member=memberService.findByEmail(principal.getName());
+		Category cat = categoryService.findById(categoryId);
 		formation.setCreator(member);
+		formation.setCategory(cat);
 		formationRepository.save(formation);
+		
 		return "redirect:/dashboard/formation/";
 	}
 	

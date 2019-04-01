@@ -13,4 +13,5 @@ public interface FormationService {
 	List<Formation> findByResponsable(Member member);
 	List<Formation> findByFollower(Member member);
 	List<Formation> findAll();
+	List<Formation> findTop6ByOrderByIdDesc();
 }

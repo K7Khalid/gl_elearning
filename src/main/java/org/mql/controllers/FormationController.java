@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.mql.models.Category;
 import org.mql.models.Formation;
 import org.mql.models.Member;
+import org.mql.services.CategoryService;
 import org.mql.services.FormationService;
 import org.mql.services.MemberService;
 import org.slf4j.Logger;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class FormationController {
 
-	private Logger log = LoggerFactory.getLogger(FormationController.class);
+	//private Logger log = LoggerFactory.getLogger(FormationController.class);
 
 	
 	@Autowired
@@ -28,6 +30,9 @@ public class FormationController {
 	
 	@Autowired
 	FormationService formationService;
+	
+	@Autowired
+	CategoryService categoryService;
 	
 	
 	@GetMapping("/formation/{id}")
@@ -58,8 +63,24 @@ public class FormationController {
 	@GetMapping(value="/formations")
 	public String index(Model model)
 	{
-		List<Formation> Formations=formationService.findAllByOrderByIdDesc();
-		model.addAttribute("listeFormations",Formations);	
+		List<Formation> formations=formationService.findAllByOrderByIdDesc();
+		model.addAttribute("title", "Formations");
+		model.addAttribute("listeFormations",formations);	
+		return "main_views/listformations" ;
+	}
+	
+	@GetMapping(value="/formations/category/{id}")
+	public String indexByCategory(Model model,@PathVariable int id)
+	{
+		Category category = categoryService.findById(id);
+		List<Formation> formations = category.getFormations();
+		String title;
+		if(formations.isEmpty())
+			title = "Aucune Formation trouvé !";
+		else 
+			title = "Formations de catégorie "+category.getName();
+		model.addAttribute("title", title);
+		model.addAttribute("listeFormations",formations);
 		return "main_views/listformations" ;
 	}
 	

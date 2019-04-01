@@ -65,11 +65,26 @@
 				</div>
 			</div>
 			<!-- /row-->
+			<!--  
 			<div class="row">
 				<div class="col-md-12">
 					<div class="form-group">
 						<label>Category <a href="#0" data-toggle="tooltip" data-placement="top" title="Separated by commas"><i class="fa fa-fw fa-question-circle"></i></a></label>
 						<input type="text" class="form-control" placeholder="Ex: Science, Biology..." name="category" th:value="${formation.category}"/>
+					</div>
+				</div>
+			</div>
+			-->
+			<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+						<label>Category</label> 
+						<select name="category_id"
+									class="selectpicker form-control" data-live-search="true" data-size="5">
+							<option th:each="cat: ${categories}" th:value="${cat.id}"
+								th:utext="${cat.name}">
+							</option>
+						</select>
 					</div>
 				</div>
 			</div>

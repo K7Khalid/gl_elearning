@@ -34,15 +34,16 @@ public class Formation {
 	@Column(name = "creatingDate")
 	private String creatingDate;
 
-	@Column(name = "category")
-	private String category;
-	
+
 	@Column(name = "description",columnDefinition="TEXT")
 	private String description;	
 	
 	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="category_id")
+	private Category category;
 
-	public Formation(String title, String creatingDate, String category, String description, List<Module> modules,
+	public Formation(String title, String creatingDate, Category category, String description, List<Module> modules,
 			List<Member> members, Member creator) {
 		super();
 		this.title = title;
@@ -78,7 +79,7 @@ public class Formation {
 
 	}
 
-	public Formation(String title, String creatingDate, String category) {
+	public Formation(String title, String creatingDate, Category category) {
 		super();
 		this.title = title;
 		this.creatingDate = creatingDate;
@@ -114,12 +115,12 @@ public class Formation {
 		this.creatingDate = creatingDate;
 	}
 
-
-	public String getCategory() {
+	
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
 
@@ -170,5 +171,7 @@ public class Formation {
 		}
 		members.add(membr);
 	}
+	
+	
 
 }

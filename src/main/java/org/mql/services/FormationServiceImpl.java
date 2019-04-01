@@ -53,4 +53,10 @@ public class FormationServiceImpl implements FormationService{
 	public List<Formation> findByFollower(Member member) {
 		return member.getFollowedFormations();
 	}
+
+	@Override
+	public List<Formation> findTop6ByOrderByIdDesc() {
+		return formationRepository.findTop6ByOrderByIdDesc();
+	}
+	
 }

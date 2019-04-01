@@ -1,12 +1,13 @@
 package org.mql.controllers;
 
-import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 
 import org.mql.dao.CommentRepository;
-import org.mql.models.Comment;
+import org.mql.models.Category;
+import org.mql.models.Formation;
 import org.mql.models.Member;
-import org.mql.models.Streaming;
+import org.mql.services.CategoryService;
+import org.mql.services.FormationService;
 import org.mql.services.MemberService;
 import org.mql.services.StreamingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,14 @@ public class MainController {
 	@Autowired
 	StreamingService streamingService;
 	
+	@Autowired 
+	FormationService formationService;
+	
 	@Autowired
 	CommentRepository commentRepo;
+	
+	@Autowired
+	CategoryService categoryService;
 
 	@GetMapping(path = "/security")
 	public String addNewMember() {
@@ -43,14 +50,24 @@ public class MainController {
 
 	//
 	@GetMapping("/")
-	public String home() {
+	public String home(Model model) {
+		List<Formation> formations = formationService.findTop6ByOrderByIdDesc();
+		model.addAttribute("formations",formations);
+		List<Category> categories = categoryService.findTop6();
+		model.addAttribute("categories",categories);
 		return "main_views/home";
 	}
 	
 	
 	@GetMapping("/test")
-	public String test() {
-		return "main_views/home";
+	public @ResponseBody String test() {
+		// last modifs
+		Formation formation = new Formation();
+		
+		Category cat = categoryService.findById(1);
+		formation.setCategory(cat);
+		formationService.save(formation);
+		return "saved";
 	}
 
 	@GetMapping("/articles")

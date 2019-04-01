@@ -1,14 +1,14 @@
 package org.mql.models;
 
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -25,6 +25,10 @@ public class Category {
 
 	@Column
 	private String description;
+	
+	
+	@OneToMany(mappedBy = "category")
+	private List<Formation> formations = new Vector<>(); 
 
 	public Category() {
 		super();
@@ -63,6 +67,15 @@ public class Category {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	
+	public List<Formation> getFormations() {
+		return formations;
+	}
+	
+	public void setFormations(List<Formation> formations) {
+		this.formations = formations;
 	}
 	
 	@Override
