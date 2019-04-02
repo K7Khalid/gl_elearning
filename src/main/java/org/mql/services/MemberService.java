@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mql.models.Member;
 import org.mql.models.Role;
+import org.mql.models.Streaming;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface MemberService extends UserDetailsService{
@@ -16,4 +17,5 @@ public interface MemberService extends UserDetailsService{
 	Member findByConfirmationToken(String confirmation);
 	boolean sendAdmissionEmail(Member member);
 	Member findById(int id);
+	List<Member> findAssistedStreams(Streaming stream);
 }

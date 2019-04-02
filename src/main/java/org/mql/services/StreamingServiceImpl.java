@@ -1,5 +1,6 @@
 package org.mql.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.mql.dao.StreamingRepository;
@@ -41,5 +42,10 @@ public class StreamingServiceImpl implements StreamingService{
 	@Override
 	public Streaming save(Streaming s) {
 		return streamingRepository.save(s);
+	}
+	
+	@Override
+	public List<Streaming> findByAssistances(Member member) {
+		return member.getAssistedStreams();
 	}
 }

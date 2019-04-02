@@ -6,10 +6,13 @@ import java.util.Vector;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -42,24 +45,30 @@ public class Streaming {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "mod_id")
 	private Module module;
-	
-	
-	/*  Comments */
-	@OneToMany (mappedBy = "streaming", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
-			CascadeType.DETACH } )
+
+	/* Comments */
+	@OneToMany(mappedBy = "streaming", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+			CascadeType.DETACH })
 	private List<Comment> comments = new Vector<Comment>();
-	
+
+	// Assistance****************************************************************************************************
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+			CascadeType.DETACH })
+	@JoinTable(name = "assistance", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "memb_id"))
+	private List<Member> members = new Vector<Member>();
+	// *****************************************************************************************************************
+
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-	
+
 	public List<Comment> getComments() {
 		return comments;
 	}
-	
+
 	public void addComment(Comment comment) {
 		comment.setStreaming(this);
-		System.out.println("Comment : "+comment.getStreaming());
+		System.out.println("Comment : " + comment.getStreaming());
 		comments.add(comment);
 	}
 
@@ -127,6 +136,21 @@ public class Streaming {
 	@Override
 	public String toString() {
 		return "Streaming title : " + title;
+	}
+
+	public void setMembers(List<Member> members) {
+		this.members = members;
+	}
+
+	public List<Member> getMembers() {
+		return members;
+	}
+
+	// addMember********************************************************************
+	public void addMember(Member membr) {
+		
+		if (!members.contains(membr))
+			members.add(membr);
 	}
 
 }

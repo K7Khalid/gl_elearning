@@ -89,6 +89,15 @@ public class Member implements UserDetails {
 	@JoinTable(name = "teacher_cat", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "cat_id"))
 	private List<Category> categories = new ArrayList<>();
 	
+	//Assistance**************************************************************************************************************
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+			CascadeType.DETACH })
+	@JoinTable(name = "assistance", joinColumns = @JoinColumn(name = "memb_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+	private List<Streaming> assistedStreams;
+	//************************************************************************************************************************
+	
+	
 	//Motivation
 	@Column(name = "motivation",columnDefinition="TEXT")
 	private String motivation;
@@ -310,6 +319,14 @@ public class Member implements UserDetails {
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
+	}
+	
+	public List<Streaming> getAssistedStreams() {
+		return assistedStreams;
+	}
+	
+	public void setAssistedStreams(List<Streaming> assistedStreams) {
+		this.assistedStreams = assistedStreams;
 	}
 	
 }

@@ -43,9 +43,27 @@
 						allowfullscreen></iframe>
 				</div>
 				<hr>
+				<div>
+					<p style="float: right; font-size: 20px;">
+						<span style="color: #8B008B;" th:text="${vues.size()}"></span><span>
+							vues </span>
+					</p>
+				</div>
+				
+				<div style="float: center; margin-top: 100px; font-size: 15px;">
+					<h2 style="float: center;">Liste des étudiants qui assistent
+						le cours en live</h2>
+					<hr>
+					<ul th:each="vue: ${vues}">
+						<li class="pe-7s-target"><span th:text="' '+${vue.lastName}"></span>
+							<span th:text="${vue.firstName}"></span></li>
+						<hr />
+					</ul>
+				</div>
 				<section id="comments">
 
-					<h2 id="commentaires" th:if="${#lists.isEmpty(comments)}">Aucun commentaire ..</h2>
+					<h2 id="commentaires" th:if="${#lists.isEmpty(comments)}">Aucun
+						commentaire ..</h2>
 					<h2 id="commentaires" th:unless="${#lists.isEmpty(comments)}">Commentaires</h2>
 					<br />
 					<div class="reviews-container" id="comment-section">
@@ -152,7 +170,7 @@
 					var	$div = $('<div>', {class : 'review-box clearfix'});
 					$div.append($figure);
 					$div.append($revContent);
-					$("#comment-section").prepend($div);
+					$("#comment-section").append($div);
 					$("#btn-submit").prop("disabled", false);
 					$("#content").val('');
 					if($("#commentaires").text() == "Aucun commentaire .."){

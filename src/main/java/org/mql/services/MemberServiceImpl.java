@@ -9,6 +9,7 @@ import org.mql.dao.MemberRepository;
 import org.mql.email.DemandeAdmission;
 import org.mql.models.Member;
 import org.mql.models.Role;
+import org.mql.models.Streaming;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -124,5 +125,10 @@ public class MemberServiceImpl implements MemberService{
 		} catch (MessagingException e) {
 			return false;
 		}
+	}
+	
+	@Override
+	public List<Member> findAssistedStreams(Streaming stream) {
+		return stream.getMembers();
 	}
 }

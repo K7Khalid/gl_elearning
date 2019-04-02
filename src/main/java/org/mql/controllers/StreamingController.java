@@ -13,6 +13,7 @@ import org.mql.models.Member;
 import org.mql.models.Module;
 import org.mql.models.Streaming;
 import org.mql.services.MemberService;
+import org.mql.services.RoleService;
 import org.mql.services.StreamingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,86 +31,96 @@ public class StreamingController {
 
 	@Autowired
 	ModuleRepository moduleRepository;
-	
+
 	@Autowired
 	MemberRepository memberRepository;
 
 	@Autowired
 	MemberService memberService;
-	
+
 	@Autowired
 	StreamingService streamingService;
-	
-	@GetMapping("dashboard/stream/add")
-	public String showStreamForm(Model model,Principal principal) {
-		//Recuperer l'ID de L'enseignant Connecter par le biais des variables de sessions
-		
-		//Recuperer tt Les modules enseigner par cet enseignant
-		// à ameliorer
-		
-		Member member = memberService.findByEmail(principal.getName());
-		List<Module> modules =  member.getTeachedModules();
-		/*cette methode va etre utiliser apres a la place de la methode presedente  
-		*List<Module> modules = memberRepository.findById(1).get().getTeachedModules();
-		*/
 
-		//remplir un modalAttribute par ces modules 
-			model.addAttribute("teachedModules", modules);
-			model.addAttribute("streaming",new Streaming());
-		
-		//test
-			System.out.println(modules);
-		
-		return "dashboard/streamForm" ;
+	@Autowired
+	RoleService roleService;
+
+	@GetMapping("dashboard/stream/add")
+	public String showStreamForm(Model model, Principal principal) {
+		// Recuperer l'ID de L'enseignant Connecter par le biais des variables de
+		// sessions
+
+		// Recuperer tt Les modules enseigner par cet enseignant
+		// à ameliorer
+
+		Member member = memberService.findByEmail(principal.getName());
+		List<Module> modules = member.getTeachedModules();
+		/*
+		 * cette methode va etre utiliser apres a la place de la methode presedente
+		 * List<Module> modules =
+		 * memberRepository.findById(1).get().getTeachedModules();
+		 */
+
+		// remplir un modalAttribute par ces modules
+		model.addAttribute("teachedModules", modules);
+		model.addAttribute("streaming", new Streaming());
+
+		// test
+		System.out.println(modules);
+
+		return "dashboard/streamForm";
 	}
-	
+
 	@PostMapping("dashboard/saveStream")
-	public  String addStream(@ModelAttribute Streaming streaming) {
+	public String addStream(@ModelAttribute Streaming streaming) {
 		// recuperer les donnees du formulaire dans un bean temporaire
 		Module module = moduleRepository.findById(streaming.getModule().getId()).get();
-		
-		//Renseigner le champs started time par la date courante
+
+		// Renseigner le champs started time par la date courante
 		streaming.setTimeStarted(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-		
-		//ajouter le streaming dans le module correspondant
+
+		// ajouter le streaming dans le module correspondant
 		module.add(streaming);
-		
+
 		// persister les donnees à la BD
 		moduleRepository.saveAndFlush(module);
-		return "redirect:/stream/"+streamingRepository.findFirstByOrderByIdDesc().getId();
+		return "redirect:/stream/" + streamingRepository.findFirstByOrderByIdDesc().getId();
 	}
-	
+
 	@GetMapping("/stream/{id}")
-	public  String showStream(@PathVariable int id ,Model model,Principal principal) {
-		// On recupere le stream ainsi que ses attributs 
+	public String showStream(@PathVariable int id, Model model, Principal principal) {
+		// On recupere le stream ainsi que ses attributs
 		Member member = memberService.findByEmail(principal.getName());
 		Streaming streaming = streamingService.findById(id);
 		boolean status = streamingService.isAllowed(streaming, member);
-		if(!status) {
-			return "error/403"; 
+		if (!status) {
+			return "error/403";
 		}
 
 		List<Comment> comments = streaming.getComments();
- 		
-		model.addAttribute("comments",comments);
-		
-		model.addAttribute("streaming",streaming);
+
+		model.addAttribute("comments", comments);
+
+		model.addAttribute("streaming", streaming);
+
+		// Assistance**************************************************************************
+
+		streaming.addMember(member);
+		streamingService.save(streaming);
+		List<Member> members = streaming.getMembers();
+		model.addAttribute("vues", members);
+		// *************************************************************************************
 
 		return "dashboard/streamVideo";
-		
+
 	}
 	/*
-	@GetMapping("/stream/{id}/addComment")
-	public String addComment(@PathVariable int id,@RequestParam("content") String content,Principal principal) {
-		Comment comment = new Comment();
-		Streaming streaming = streamingService.findById(id);
-		comment.setMember(memberService.findByEmail(principal.getName()));
-		comment.setDate(new Date());
-		comment.setContent(content);
-		streaming.addComment(comment);
-		streamingService.save(streaming);
-		return "redirect:/stream/"+id;
-	}
-	*/
+	 * @GetMapping("/stream/{id}/addComment") public String addComment(@PathVariable
+	 * int id,@RequestParam("content") String content,Principal principal) { Comment
+	 * comment = new Comment(); Streaming streaming = streamingService.findById(id);
+	 * comment.setMember(memberService.findByEmail(principal.getName()));
+	 * comment.setDate(new Date()); comment.setContent(content);
+	 * streaming.addComment(comment); streamingService.save(streaming); return
+	 * "redirect:/stream/"+id; }
+	 */
 
 }
