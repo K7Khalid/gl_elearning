@@ -1,3 +1,4 @@
+console.log("hey");
 var HeaderVideo = (function ($, document) {
     
     var settings = {
