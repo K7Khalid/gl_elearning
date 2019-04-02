@@ -2,6 +2,7 @@ package org.mql.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,7 +54,12 @@ public class Module {
 			CascadeType.DETACH })
 	@JoinColumn(name="member_id")
 	private Member teacher;
+	
+	@Column(name="file")
+	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+	private List<File> files = new Vector<>();
 
+	
 	public Module() {
 
 	}
@@ -162,6 +168,18 @@ public class Module {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public List<File> getFiles() {
+		return files;
+	}
+	
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
+	
+	public void addFile(File file) {
+		files.add(file);
 	}
 
 	@Override

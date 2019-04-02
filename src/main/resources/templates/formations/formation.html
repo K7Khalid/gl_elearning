@@ -67,8 +67,14 @@
 												<li th:text="'Type : '+${module.type}"></li>
 												<li>
 													Enseignant :<a th:href="@{|/teacher/${module.teacher.id}|}" th:text="' ' + ${module.teacher}"></a>
-												</li>							
-					
+												</li>
+												<li th:if="${not #lists.isEmpty(module.files) AND ( inscription==true OR #authorization.expression('hasRole(''ROLE_ADMIN'')') OR #authorization.expression('hasRole(''ROLE_RESPONSABLE'')')  ) }">
+													Supports : 
+													<div th:each="f: ${module.files}" style="margin-left:15px;">
+														<a th:href="@{'/support/' + ${f.name}}"  th:text="${f.name}" target="_blank"></a>
+													</div>
+									
+												</li>						
 											</ul>
 											</div>
 										</div>

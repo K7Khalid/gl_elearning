@@ -1,5 +1,8 @@
 package org.mql.controllers.dashboard;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
 
@@ -9,6 +12,7 @@ import org.mql.dao.FormationRepository;
 import org.mql.dao.MemberRepository;
 import org.mql.dao.ModuleRepository;
 import org.mql.models.Category;
+import org.mql.models.File;
 import org.mql.models.Formation;
 import org.mql.models.Member;
 import org.mql.models.Module;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -46,6 +51,8 @@ public class DashFormationController {
 	
 	@Autowired
 	FormationService formationService;
+	
+	private static String uploadDir = System.getProperty("user.dir")+ "/src/main/resources/static/";
 	
 	@GetMapping("/")
 	public String mainPage(Model model, Principal principal) {
@@ -106,10 +113,16 @@ public class DashFormationController {
 	}
 	
 	@PostMapping("addModule")
-	public String addModule(@ModelAttribute Module module,@RequestParam("formation_id") int id,@RequestParam("member_id") int memberId,Model model) {
+	public String addModule(@ModelAttribute Module module,@RequestParam("formation_id") int id,@RequestParam("member_id") int memberId,Model model,@RequestParam MultipartFile[] supportsEdu) {
 		Formation formation = formationRepository.findById(id).get();
 		Member member = memberRepository.findById(memberId).get();
 		module.setTeacher(member);
+		for (MultipartFile supportEdu : supportsEdu) {
+			String fileName = uploadFile("support/", supportEdu);
+			File file = new File(fileName);
+			file.setModule(module);
+			module.addFile(file);
+		}
 		formation.add(module);
 		formationRepository.save(formation);
 		return "redirect:/dashboard/formation/";
@@ -122,6 +135,23 @@ public class DashFormationController {
 		List<Formation> formations = formationService.findByFollower(member);
 		model.addAttribute("formations", formations);
 		return "dashboard/followedFormations";
+	}
+	
+	private String uploadFile(String path,MultipartFile file) {
+		System.out.println(uploadDir);
+		System.out.println(path);
+		System.out.println(uploadDir + path);
+		
+		String name = file.getOriginalFilename();
+		Path fileNameAndPath = Paths.get(uploadDir + path, name);
+		try {
+			Files.write(fileNameAndPath, file.getBytes());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("*****************" + name);
+		return name;
 	}
 	
 }
