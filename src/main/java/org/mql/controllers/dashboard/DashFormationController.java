@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
+import java.util.Vector;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import org.mql.models.File;
 import org.mql.models.Formation;
 import org.mql.models.Member;
 import org.mql.models.Module;
+import org.mql.models.Streaming;
 import org.mql.services.CategoryService;
 import org.mql.services.FormationService;
 import org.mql.services.MemberService;
@@ -153,5 +155,26 @@ public class DashFormationController {
 		System.out.println("*****************" + name);
 		return name;
 	}
+	
+
+	/***************************************************************************************************/
+	// Get the authetificated student Streamed Courses
+	@GetMapping("/StreamedCourses")
+	public String getStreamedCourses(Model model,Principal principal) {
+		Member member = memberService.findByEmail(principal.getName());
+		List<Formation> formations = formationService.findByFollower(member);
+		List<Module> modules = new Vector<>();
+		List<Streaming> streamings = new Vector<>();
+		for (Formation formation:formations ) {
+			modules.addAll(formation.getModules());
+		}
+		for (Module module: modules ) {
+			streamings.addAll(module.getStreams());
+		}
+		model.addAttribute("streams", streamings);
+		return "dashboard/StreamedCourses";
+	}
+	/***************************************************************************************************/
+
 	
 }

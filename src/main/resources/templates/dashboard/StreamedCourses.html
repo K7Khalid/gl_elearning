@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/general_dashboard.html :: head"></div>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<div th:replace="fragments/general_dashboard :: dashboard_nav"></div>
+<!-- /Navigation-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Cours en Live</li>
+        </ol>
+        <div style="padding-bottom:15px" th:if="${#lists.isEmpty(streams)}" class="box_general">
+            <h3 align="center">Aucun Cours en Live pour le Moment <i class="fa fa-frown-o" aria-hidden="true"></i></h3>
+        </div>
+        <div th:unless="${#lists.isEmpty(streams)}" class="box_general">
+            <div class="header_box">
+                <h2 class="d-inline-block">Cours en Live</h2>
+            </div>
+            <div class="list_general">
+                <ul>
+                    <li th:each="stream: ${streams}">
+                        <h4 th:inline="text"> [[${stream.getTitle()}]]</h4>
+                        <ul class="course_list">
+                            <li th:inline="text"><strong>Enseignant</strong> [[${stream.getModule().getTeacher().getFirstName()}]] [[${stream.getModule().getTeacher().getLastName()}]]</li>
+                            <li th:inline="text"><strong>Module</strong> [[${stream.getModule().getTitle()}]]</li>
+                            <li th:inline="text"><strong>Diffusé le </strong> [[${stream.getTimeStarted()}]]</li>
+                            <li th:inline="text">
+                                <a style="float: right;" th:href="@{'/stream'+'/'+${stream.getId()}+'/'}">aller au live</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <!-- /box_general-->
+        <!--
+        <nav aria-label="...">
+            <ul class="pagination pagination-sm add_bottom_30">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+        -->
+
+        <!-- /pagination-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /container-wrapper-->
+<div th:replace="fragments/general_dashboard :: dashboard_footer"></div>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div th:replace="fragments/general_dashboard :: logout_modal"></div>
+
+
+<!-- SCRIPTS -->
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- Core plugin JavaScript-->
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<!-- Page level plugin JavaScript-->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+<script th:src="@{/vendor/datatables/jquery.dataTables.js}"></script>
+<script th:src="@{/vendor/datatables/dataTables.bootstrap4.js}"></script>
+<script th:src="@{/vendor/jquery.selectbox-0.2.js}"></script>
+<script th:src="@{/vendor/retina-replace.min.js}"></script>
+<script th:src="@{/vendor/jquery.magnific-popup.min.js}"></script>
+<!-- Custom scripts for all pages-->
+<script th:src="@{/js/admin.js}"></script>
+
+<!-- SCRIPTS END-->
+</body>
+</html>
